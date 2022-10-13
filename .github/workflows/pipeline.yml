@@ -1,0 +1,73 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  # Cancel Previous Redundant Builds
+  check-skip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Redundant Builds
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+  # Format code with Prettier
+  prettier:
+    name: Run prettier to format code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run Format w/ Prettier
+        run: yarn format
+
+  # Run eslint as linter
+  eslint:
+    name: Run eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run Eslint
+        run: yarn lint
+
+  # Run tsc for typescript errors
+  tsc:
+    name: Run tsc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.15.0
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run Eslint
+        run: yarn ts-lint
