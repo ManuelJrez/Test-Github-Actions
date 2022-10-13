@@ -38,6 +38,7 @@ jobs:
 
   # Run eslint as linter
   eslint:
+    needs: [prettier]
     name: Run eslint
     runs-on: ubuntu-latest
     steps:
